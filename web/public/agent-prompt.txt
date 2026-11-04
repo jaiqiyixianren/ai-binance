@@ -1,0 +1,16 @@
+帮我用币安 Agentic Wallet 在 BNB Chain 主网铸造币安宝可梦（BPKM）创世卡。
+
+资格：仅限已在 SPACE ID Agent ID Registry（0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F）注册、且 handle 归属调用钱包的 Binance Agent ID（xxx.ai）。每个 Agent ID 终身 1 次；全局 10,000 次。无 Agent ID 不要发起 mint。
+
+活动页：https://你的域名/（部署 web 后替换）
+合约：BinancePokemonMint 0x4a144D1A5Ca9C8e60A93C9836DD8740eB216FF5C / BPKM 0xc551f27Ba30012DB696Cffe2d2bA128401Ed8D67 / USDT 0x55d398326f99059fF775485246999027B3197955
+
+价格与卡牌：每次固定 1 USDT；mint 后链上随机 species（mint 前不得承诺）。新版 v2 Mint：第一档 48.8% 四均分（鲤鱼王/杰尼龟/妙蛙种子/绿毛虫，1×）；第二档 28.8% 三均分（皮卡丘/喵喵/穿山鼠，2×）；第三档 16.8% 二均分（爆肌蚊/阿柏蛇，3×）；第四档 5.6% 超梦（5×）。当前主网旧 Mint 仍为三卡 94%/5%/1%。以 Minted 事件 species（或旧 tier）/multiplier/amountBPKM 为准。
+
+步骤（优先 baw）：
+1) baw 登录并确认 Agent ID：baw wallet agent-id --json，claimed 须为 true。
+2) 只读检查 Mint：finalized/soldOut、remaining、agentOf(钱包).ok、allowanceOf(钱包)=1、1 USDT + BNB gas。
+3) USDT 仅精确 approve 1 给 Mint，单独确认；禁止无限授权。
+4) Mint.mint() 无参数，单独确认，等 receipt。
+5) 中文告知：实付 1 USDT、卡牌中英文名、species、实得 BPKM、BscScan 链接。
+6) 勿自动 finalize / withdraw，除非我另说。

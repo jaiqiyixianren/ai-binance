@@ -1,0 +1,19 @@
+# 币安宝可梦 BPKM — Agent 事实源（BSC 主网 chainId 56）
+
+活动页：本站点根 URL
+用户提示词：/agent-prompt.txt
+仓库：AGENT.md
+
+## 资格
+
+SPACE ID Agent ID Registry 0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F；handle 归属 msg.sender。每 Agent ID 1 次 mint；全局 10000 次。
+
+## 合约
+
+Mint 0x4a144D1A5Ca9C8e60A93C9836DD8740eB216FF5C
+BPKM 0xc551f27Ba30012DB696Cffe2d2bA128401Ed8D67
+USDT 0x55d398326f99059fF775485246999027B3197955
+
+## 铸造
+
+1 USDT · mint() · tier 0/1/2 = Magikarp/Pikachu/Mewtwo · baw approve 精确 1 USDT 再 mint

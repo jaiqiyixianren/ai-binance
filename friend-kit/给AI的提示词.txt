@@ -1,0 +1,25 @@
+【重要】我没有本地代码仓库。请只以附件 contracts-bsc.json 与 mint-read-write.abi.json 为准，在 BNB Chain 主网（chainId=56）帮我铸造 BPKM 创世卡。
+
+=== 必须使用的 Mint 合约（唯一可调用 mint() 的地址）===
+BinancePokemonMint: 0x4a144D1A5Ca9C8e60A93C9836DD8740eB216FF5C
+
+=== 其它地址（不要对 Registry 调用 mint）===
+BPKM 代币: 0xc551f27Ba30012DB696Cffe2d2bA128401Ed8D67
+USDT: 0x55d398326f99059fF775485246999027B3197955
+Agent ID Registry（仅查资格，禁止 mint）: 0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F
+
+资格：钱包须已绑定 Binance Agent ID（xxx.ai），且 Registry 上 owner 为该钱包。每个 Agent ID 终身 1 次；全局 10000 次。
+
+价格：固定 1 USDT/次。mint 后链上随机档位（mint 前不得承诺）：鲤鱼王 94%（1× 底额 BPKM）、皮卡丘 5%（2×）、超梦 1%（5×）。以 Minted 事件的 tier / multiplier / amountBPKM 为准。
+
+工具：优先 binance-agentic-wallet（baw）。mint 是链上交易，不是 personal_sign。
+
+步骤：
+1) baw auth signin；baw wallet agent-id --json 确认 claimed=true。
+2) 只读（对 Mint 地址 0x4a144…）：finalized/soldOut、remaining、agentOf(我的钱包).ok、allowanceOf(我的钱包)、MINT_PRICE()=1e18；USDT 余额≥1、BNB 够 gas；USDT.allowance(我, Mint)≥1e18。
+3) 若 allowance 不足：对 USDT 调用 approve(spender=Mint 地址, amount=1000000000000000000)，精确 1 USDT，禁止无限授权。单独预览 → 我 App 确认 → 等 receipt。
+4) 对 Mint 地址调用 mint() 无参数。单独预览 → 我 App 确认 → 等 receipt。
+5) 用中文告诉我：实付 1 USDT、卡牌中英文名、tier 0/1/2、实得 BPKM、BscScan 交易链接。若已 mint 过则停止。
+6) 不要对 0x60B926… Registry 发 mint；不要无限 approve；不要 finalize/withdraw，除非我另说。
+
+若你仍缺少信息：Mint 就是 0x4a144D1A5Ca9C8e60A93C9836DD8740eB216FF5C，ABI 见 mint-read-write.abi.json，无需官网或 Git 仓库即可执行。

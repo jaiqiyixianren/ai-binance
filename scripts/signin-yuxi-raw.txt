@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "data": {
+    "qrCodeId": "d6ad0a0a-a704-468b-b409-03da01d0d52c",
+    "expireAt": "1793815565030",
+    "urlForWeb": "https://app.binance.com/uni-qr/ErMbZt4j",
+    "pairingCode": "f6150f"
+  }
+}

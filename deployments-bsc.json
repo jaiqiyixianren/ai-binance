@@ -1,0 +1,10 @@
+{
+  "chainId": 56,
+  "deployer": "0x2548d570741171aC475bf3a4f48Bf0f3BfA7f9C2",
+  "owner": "0x2548d570741171aC475bf3a4f48Bf0f3BfA7f9C2",
+  "token": "0x7A0318169CFf59108Dc2a5E2df1fc971437e4B1c",
+  "mint": "0x98BaFFc1f6f767405c7683bFcC86063fd8Ef3163",
+  "mintFromBlock": 131675861,
+  "setMinterTx": "0x7d63d3254c1c74af77b945ee2d3c39267e2a6fb625b4203bb3d8c71fbf99273a",
+  "tokenFromBlock": 131675851
+}

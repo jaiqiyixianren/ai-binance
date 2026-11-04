@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Mewtwo stylized">
+  <defs>
+    <linearGradient id="mt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#7c6bb8"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="100" cy="125" rx="40" ry="48" fill="url(#mt)"/>
+  <ellipse cx="100" cy="72" rx="36" ry="40" fill="url(#mt)"/>
+  <path d="M64 48 Q100 8 136 48 L128 62 Q100 32 72 62 Z" fill="#9b7ed9"/>
+  <ellipse cx="82" cy="68" rx="10" ry="14" fill="#fff" opacity="0.9"/>
+  <ellipse cx="118" cy="68" rx="10" ry="14" fill="#fff" opacity="0.9"/>
+  <circle cx="82" cy="70" r="5" fill="#4a3d7a"/>
+  <circle cx="118" cy="70" r="5" fill="#4a3d7a"/>
+  <path d="M88 88 Q100 96 112 88" fill="none" stroke="#4a3d7a" stroke-width="2"/>
+  <path d="M100 108 L100 145" stroke="#6b5b95" stroke-width="8" stroke-linecap="round"/>
+  <path d="M72 130 L100 145 L128 130" fill="none" stroke="#6b5b95" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="100" cy="155" rx="8" ry="12" fill="#9b7ed9"/>
+</svg>

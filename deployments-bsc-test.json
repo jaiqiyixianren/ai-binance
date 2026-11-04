@@ -1,0 +1,12 @@
+{
+  "variant": "test-10m",
+  "chainId": 56,
+  "deployer": "0x2548d570741171aC475bf3a4f48Bf0f3BfA7f9C2",
+  "owner": "0x2548d570741171aC475bf3a4f48Bf0f3BfA7f9C2",
+  "token": "0x45aD8fa8558f7431CEe1B07dC9404639806940C4",
+  "mint": "0x73E7bd4f2E837A02D8a30aF44a89862c7dB76500",
+  "mintFromBlock": 131671294,
+  "roundDurationSec": 600,
+  "setMinterTx": "0xef8602de721b7fa837acfddce0cc5ec7f64ccd21846477e2b9c687a3fda5fe56",
+  "tokenFromBlock": 131671284
+}

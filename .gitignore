@@ -1,0 +1,19 @@
+node_modules/
+.npm-cache/
+dist/
+.env*
+!.env.example
+!web/.env.example
+contracts/out/
+contracts/cache/
+contracts/lib/
+broadcast/
+ref-pearl.js
+# deployments-bsc.json 可提交（正式地址公开）
+baw-sessions/
+logs/
+*.log
+signin-*-pending.json
+web/public/baw-*-login-qr.png
+scripts/_MintBundle.sol
+scripts/node_modules/

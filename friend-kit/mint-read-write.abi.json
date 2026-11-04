@@ -1,0 +1,26 @@
+{
+  "mintContract": "0x4a144D1A5Ca9C8e60A93C9836DD8740eB216FF5C",
+  "usdtContract": "0x55d398326f99059fF775485246999027B3197955",
+  "mintAbi": [
+    "function mint() external",
+    "function MINT_PRICE() view returns (uint256)",
+    "function totalMinted() view returns (uint256)",
+    "function remaining() view returns (uint256)",
+    "function soldOut() view returns (bool)",
+    "function finalized() view returns (bool)",
+    "function tokensPerMint() view returns (uint256)",
+    "function maxMintPerAgent() view returns (uint256)",
+    "function agentOf(address wallet) view returns (uint256 agentId, bool ok)",
+    "function allowanceOf(address wallet) view returns (uint256)",
+    "function mintedByWallet(address) view returns (uint256)",
+    "function cardTierByAgent(uint256) view returns (uint8)",
+    "function multiplierByAgent(uint256) view returns (uint8)",
+    "event Minted(address indexed minter, uint256 indexed agentId, string handle, uint8 tier, uint8 multiplier, uint256 amountBPKM, uint256 usdtPaid, uint256 totalMintedAfter)"
+  ],
+  "usdtAbi": [
+    "function balanceOf(address) view returns (uint256)",
+    "function allowance(address owner, address spender) view returns (uint256)",
+    "function approve(address spender, uint256 amount) returns (bool)",
+    "function decimals() view returns (uint8)"
+  ]
+}

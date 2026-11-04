@@ -1,0 +1,28 @@
+# 币安宝可梦 BPKM — Agent 事实源（BSC 主网 chainId 56）
+
+活动页：部署 web/ 后的站点根路径（进度与规则）
+完整 Agent 步骤：仓库 AGENT.md 与 web/public/agent-prompt.txt
+
+## 资格
+
+仅限 SPACE ID Agent ID Registry 0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F 上已注册、且 ownerOf(agentId)==msg.sender 的钱包（Binance Agent ID / xxx.ai）。
+每个 Agent ID：终身 1 次 mint。全局：10,000 次。
+
+## 合约
+
+BinancePokemonMint: 0x4a144D1A5Ca9C8e60A93C9836DD8740eB216FF5C
+BPKM Token: 0xc551f27Ba30012DB696Cffe2d2bA128401Ed8D67
+USDT BSC: 0x55d398326f99059fF775485246999027B3197955
+Agent ID Registry: 0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F
+PancakeSwap V2 Router: 0x10ED43C718714eb63d5aA57B78B54704E256024E
+
+## 经济
+
+每次 1 USDT → mint()；随机 tier：0 Magikarp 94% 1x，1 Pikachu 5% 2x，2 Mewtwo 1% 5x（相对 tokensPerMint 底额）。
+满 10000 次后任何人 finalize()：合约 USDT 90% 加池 + 1e8 BPKM；约 10% USDT 留合约由 owner withdrawUsdt。
+
+## 推荐 baw 流程
+
+signin → wallet agent-id → 只读检查 → approve 1 USDT（精确）→ mint() → 解析 Minted 事件 → 中文结果 + BscScan。
+
+非 Binance 官方 · DYOR · 粉丝向主题

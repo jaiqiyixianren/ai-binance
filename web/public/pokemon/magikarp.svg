@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Magikarp stylized">
+  <defs>
+    <linearGradient id="mg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff8a7a"/>
+      <stop offset="100%" stop-color="#e85d4c"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="100" cy="108" rx="72" ry="48" fill="url(#mg)"/>
+  <path d="M28 100 Q8 88 20 72 Q36 82 28 100" fill="#e85d4c"/>
+  <circle cx="132" cy="88" r="10" fill="#fff"/>
+  <circle cx="135" cy="88" r="5" fill="#1a1a2e"/>
+  <path d="M155 95 Q175 100 168 115 Q158 108 155 95" fill="#ffc9c0"/>
+  <ellipse cx="88" cy="118" rx="22" ry="8" fill="#ff6b5a" opacity="0.5"/>
+</svg>

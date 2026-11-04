@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Pikachu stylized">
+  <defs>
+    <linearGradient id="pk" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe566"/>
+      <stop offset="100%" stop-color="#ffcb05"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="100" cy="118" rx="58" ry="52" fill="url(#pk)"/>
+  <circle cx="100" cy="72" r="42" fill="url(#pk)"/>
+  <path d="M58 52 L42 28 L68 48 Z" fill="#ffcb05" stroke="#c9a204" stroke-width="2"/>
+  <path d="M142 52 L158 28 L132 48 Z" fill="#ffcb05" stroke="#c9a204" stroke-width="2"/>
+  <circle cx="82" cy="68" r="8" fill="#1a1a2e"/>
+  <circle cx="118" cy="68" r="8" fill="#1a1a2e"/>
+  <circle cx="84" cy="66" r="3" fill="#fff"/>
+  <circle cx="120" cy="66" r="3" fill="#fff"/>
+  <ellipse cx="100" cy="82" rx="6" ry="4" fill="#1a1a2e"/>
+  <path d="M88 92 Q100 102 112 92" fill="none" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+  <path d="M72 108 Q100 128 128 108" fill="#e85d4c" opacity="0.85"/>
+  <ellipse cx="58" cy="118" rx="14" ry="10" fill="#c9a204" opacity="0.35"/>
+  <ellipse cx="142" cy="118" rx="14" ry="10" fill="#c9a204" opacity="0.35"/>
+</svg>
