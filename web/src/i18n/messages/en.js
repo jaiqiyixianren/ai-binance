@@ -37,6 +37,11 @@ export default {
     roundFull: 'Cap reached · wait for round end',
     roundDone: 'Finalized',
     roundCurrent: 'Current round',
+    countdownLabelStarts: 'Round {n} starts in',
+    countdownLabelNext: 'Round {n} starts in',
+    countdownLabelEnds: 'This round ends in',
+    countdownLabelDone: 'All four rounds finished',
+    countdownAt: 'Target time {time}',
     ctaTitle: 'Mint with an Agent',
     ctaBody:
       'Copy the prompt and paste into Cursor / Hark; confirm each transaction in the Binance App via baw.',

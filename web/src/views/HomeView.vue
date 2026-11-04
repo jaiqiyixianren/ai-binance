@@ -1,18 +1,20 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { Contract, formatUnits, JsonRpcProvider } from 'ethers'
+import { Contract, formatUnits } from 'ethers'
 import {
   ADDRESSES,
-  BSC_CHAIN_ID,
   MINT_ABI,
-  PUBLIC_BSC_RPC,
   ROUND_SPECS,
   ROUND1_START_UNIX,
   ROUND_DURATION_SEC,
 } from '../config.js'
+import { createBscReadProvider, withRpcTimeout } from '../security/rpc.js'
+import { safeUserError } from '../security/safeError.js'
+import { bscscanAddressUrl, bscscanTxUrl } from '../security/externalUrl.js'
 import { CARDS_V2, CARDS_FEATURED_FOUR, cardsForMint, formatBpkmAmount } from '../cards.js'
 import { buildAgentPrompt } from '../agentPrompt.js'
+import { formatCountdownClock, resolveNextRoundCountdown } from '../countdown.js'
 import { formatCardBpkm, lookupCardsByAddress } from '../lookupCards.js'
 import { useI18n, cardLocalizedName } from '../i18n/index.js'
 
@@ -49,6 +51,8 @@ const roundRows = ref([])
 const mintRoundIndex = ref(-1)
 const mintRoundActive = ref(false)
 const chainNowSec = ref(0)
+/** 与链上 block 对齐后每秒 +1，用于倒计时 */
+const nowSec = ref(Math.floor(Date.now() / 1000))
 
 const contractsReady = computed(() => Boolean(ADDRESSES.mint))
 
@@ -99,6 +103,33 @@ function fmtTime(sec) {
   if (!sec) return '—'
   return new Date(sec * 1000).toLocaleString(numberLocale.value, { hour12: false })
 }
+
+const countdownInfo = computed(() => resolveNextRoundCountdown(roundsDisplay.value, nowSec.value))
+
+const countdownLabel = computed(() => {
+  const c = countdownInfo.value
+  if (!c || c.kind === 'done') return t('home.countdownLabelDone')
+  const n = (c.roundIndex ?? 0) + 1
+  if (c.kind === 'starts' || c.kind === 'next') {
+    const key = c.kind === 'starts' ? 'home.countdownLabelStarts' : 'home.countdownLabelNext'
+    return t(key).replace('{n}', String(n))
+  }
+  if (c.kind === 'ends') return t('home.countdownLabelEnds')
+  return ''
+})
+
+const countdownClock = computed(() => {
+  const c = countdownInfo.value
+  if (!c?.targetSec) return ''
+  const rem = c.targetSec - nowSec.value
+  return formatCountdownClock(rem, locale.value)
+})
+
+const countdownTargetTime = computed(() => {
+  const c = countdownInfo.value
+  if (!c?.targetSec) return ''
+  return t('home.countdownAt').replace('{time}', fmtTime(c.targetSec))
+})
 function roundStatus(row) {
   const now = contractsReady.value ? chainNowSec.value : Math.floor(Date.now() / 1000)
   if (row.finalized) return t('home.roundDone')
@@ -120,12 +151,9 @@ const tokensPerMintHuman = computed(() => {
   if (!tokensPerMint.value) return '—'
   return Number(formatUnits(tokensPerMint.value, 18)).toLocaleString(numberLocale.value)
 })
-const mintContractLink = computed(() =>
-  ADDRESSES.mint ? `https://bscscan.com/address/${ADDRESSES.mint}` : '',
-)
-const tokenContractLink = computed(() =>
-  ADDRESSES.token ? `https://bscscan.com/address/${ADDRESSES.token}` : '',
-)
+const mintContractLink = computed(() => bscscanAddressUrl(ADDRESSES.mint))
+const tokenContractLink = computed(() => bscscanAddressUrl(ADDRESSES.token))
+const registryContractLink = computed(() => bscscanAddressUrl(ADDRESSES.agentRegistry))
 
 async function refreshOnchain() {
   error.value = ''
@@ -134,30 +162,35 @@ async function refreshOnchain() {
   }
   loading.value = true
   try {
-    const provider = new JsonRpcProvider(PUBLIC_BSC_RPC, BSC_CHAIN_ID)
+    const provider = createBscReadProvider()
     const mint = new Contract(ADDRESSES.mint, MINT_ABI, provider)
-    const block = await provider.getBlock('latest')
+    const block = await withRpcTimeout(provider.getBlock('latest'))
     chainNowSec.value = Number(block.timestamp)
-    const [tpm, tmc, mr, ma] = await Promise.all([
-      mint.tokensPerMint(),
-      mint.totalMintCount(),
-      mint.mintingRound(),
-      mint.activeRound(),
-    ])
+    nowSec.value = chainNowSec.value
+    const [tpm, tmc, mr, ma] = await withRpcTimeout(
+      Promise.all([
+        mint.tokensPerMint(),
+        mint.totalMintCount(),
+        mint.mintingRound(),
+        mint.activeRound(),
+      ]),
+    )
     tokensPerMint.value = tpm
     totalMintCount.value = tmc
     mintRoundIndex.value = Number(mr[0])
     mintRoundActive.value = ma[1]
-    const n = Number(await mint.NUM_ROUNDS())
+    const n = Number(await withRpcTimeout(mint.NUM_ROUNDS()))
     const rows = []
     for (let i = 0; i < n; i++) {
-      const [capWei, priceWei, maxPerWallet] = await mint.rounds(i)
-      const [startSec, endSec, raisedWei, fin] = await Promise.all([
-        mint.roundStart(i),
-        mint.roundEnd(i),
-        mint.raisedBnb(i),
-        mint.roundFinalized(i),
-      ])
+      const [capWei, priceWei, maxPerWallet] = await withRpcTimeout(mint.rounds(i))
+      const [startSec, endSec, raisedWei, fin] = await withRpcTimeout(
+        Promise.all([
+          mint.roundStart(i),
+          mint.roundEnd(i),
+          mint.raisedBnb(i),
+          mint.roundFinalized(i),
+        ]),
+      )
       const inWindow = chainNowSec.value >= Number(startSec) && chainNowSec.value < Number(endSec) && !fin
       const canMint = inWindow && raisedWei + priceWei <= capWei
       rows.push({
@@ -176,18 +209,25 @@ async function refreshOnchain() {
     }
     roundRows.value = rows
   } catch (e) {
-    error.value = e.shortMessage || e.message || String(e)
+    error.value = safeUserError(e)
   } finally {
     loading.value = false
   }
 }
 
 let pollTimer
+let tickTimer
 onMounted(() => {
   refreshOnchain()
   pollTimer = setInterval(refreshOnchain, 60_000)
+  tickTimer = setInterval(() => {
+    nowSec.value += 1
+  }, 1000)
 })
-onUnmounted(() => clearInterval(pollTimer))
+onUnmounted(() => {
+  clearInterval(pollTimer)
+  clearInterval(tickTimer)
+})
 
 const lookupAddress = ref('')
 const lookupLoading = ref(false)
@@ -209,8 +249,8 @@ async function queryWalletCards() {
   }
   lookupLoading.value = true
   try {
-    const provider = new JsonRpcProvider(PUBLIC_BSC_RPC, BSC_CHAIN_ID)
-    const result = await lookupCardsByAddress(provider, lookupAddress.value)
+    const provider = createBscReadProvider()
+    const result = await withRpcTimeout(lookupCardsByAddress(provider, lookupAddress.value))
     lookupCards.value = result.cards
     lookupInfoKey.value = result.messageKey
     if (result.inWindow) {
@@ -218,7 +258,7 @@ async function queryWalletCards() {
     }
     lookupDone.value = true
   } catch (e) {
-    lookupError.value = e.shortMessage || e.message || String(e)
+    lookupError.value = safeUserError(e)
   } finally {
     lookupLoading.value = false
   }
@@ -308,7 +348,7 @@ function cardTitle(row) {
             class="btn btn-ghost btn-sm"
             href="https://www.binance.com/en/skills/detail/binance-web3/binance-agentic-wallet"
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
           >
             {{ t('home.installBaw') }}
           </a>
@@ -356,6 +396,19 @@ function cardTitle(row) {
         <strong class="status-pill" :data-live="contractsReady && mintRoundActive">{{ contractsReady ? statusText : '—' }}</strong>
       </div>
       <p class="muted deck-hint">{{ t('home.roundFinalize') }}</p>
+      <div
+        v-if="countdownInfo && countdownInfo.kind !== 'done'"
+        class="round-countdown"
+        role="timer"
+        :aria-live="'polite'"
+      >
+        <p class="round-countdown__label">{{ countdownLabel }}</p>
+        <p class="round-countdown__clock">{{ countdownClock }}</p>
+        <p class="round-countdown__meta muted">{{ countdownTargetTime }}</p>
+      </div>
+      <p v-else-if="countdownInfo?.kind === 'done'" class="round-countdown round-countdown--done muted">
+        {{ countdownLabel }}
+      </p>
       <p v-if="!contractsReady" class="muted fine-print">{{ t('home.errNoMint') }}</p>
       <div v-else class="stat-grid stat-grid--compact">
         <div class="stat stat--wide">
@@ -411,7 +464,9 @@ function cardTitle(row) {
             class="lookup-input"
             type="text"
             inputmode="text"
+            maxlength="42"
             autocomplete="off"
+            autocapitalize="off"
             spellcheck="false"
             :placeholder="t('home.lookupPlaceholder')"
           />
@@ -450,11 +505,11 @@ function cardTitle(row) {
             </p>
           </div>
           <a
-            v-if="row.txHash"
+            v-if="bscscanTxUrl(row.txHash)"
             class="btn btn-ghost btn-sm lookup-item__tx"
-            :href="`https://bscscan.com/tx/${row.txHash}`"
+            :href="bscscanTxUrl(row.txHash)"
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
           >
             {{ t('home.lookupTx') }}
           </a>
@@ -468,9 +523,9 @@ function cardTitle(row) {
       </button>
       <div v-show="showContracts" class="details-panel">
         <ul class="contract-list muted">
-          <li>Registry：<a :href="`https://bscscan.com/address/${ADDRESSES.agentRegistry}`" target="_blank" rel="noopener">{{ ADDRESSES.agentRegistry }}</a></li>
-          <li>Mint：<a :href="mintContractLink" target="_blank" rel="noopener">{{ ADDRESSES.mint }}</a></li>
-          <li>BPKM：<a :href="tokenContractLink" target="_blank" rel="noopener">{{ ADDRESSES.token }}</a></li>
+          <li>Registry：<a :href="registryContractLink" target="_blank" rel="noopener noreferrer">{{ ADDRESSES.agentRegistry }}</a></li>
+          <li>Mint：<a :href="mintContractLink" target="_blank" rel="noopener noreferrer">{{ ADDRESSES.mint }}</a></li>
+          <li>BPKM：<a :href="tokenContractLink" target="_blank" rel="noopener noreferrer">{{ ADDRESSES.token }}</a></li>
         </ul>
       </div>
     </section>

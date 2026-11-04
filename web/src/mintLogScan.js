@@ -60,11 +60,16 @@ function resolveDeployFloorBlock(mintAddress) {
 }
 
 export async function queryMintedLogsChunked(mintContract, wallet, fromBlock, toBlock) {
+  const from = Math.max(0, Number(fromBlock) | 0)
+  let to = Math.max(from, Number(toBlock) | 0)
+  if (to - from > MAX_ROUND_SCAN_BLOCKS + LOG_CHUNK_SIZE) {
+    to = from + MAX_ROUND_SCAN_BLOCKS + LOG_CHUNK_SIZE
+  }
   const filter = mintContract.filters.Minted(wallet, null, null)
   const logs = []
 
-  for (let start = fromBlock; start <= toBlock; start += LOG_CHUNK_SIZE) {
-    const end = Math.min(start + LOG_CHUNK_SIZE - 1, toBlock)
+  for (let start = from; start <= to; start += LOG_CHUNK_SIZE) {
+    const end = Math.min(start + LOG_CHUNK_SIZE - 1, to)
     const chunk = await mintContract.queryFilter(filter, start, end)
     logs.push(...chunk)
   }

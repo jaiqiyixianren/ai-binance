@@ -475,6 +475,42 @@ button {
   grid-column: 1 / -1;
 }
 
+.round-countdown {
+  margin: 16px 0 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 203, 5, 0.35);
+  background: linear-gradient(135deg, rgba(255, 203, 5, 0.08), rgba(0, 82, 255, 0.06));
+}
+
+.round-countdown--done {
+  border-style: dashed;
+  opacity: 0.85;
+}
+
+.round-countdown__label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.round-countdown__clock {
+  margin: 6px 0 0;
+  font-size: clamp(28px, 6vw, 40px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  text-shadow: 0 0 24px rgba(255, 203, 5, 0.25);
+}
+
+.round-countdown__meta {
+  margin: 6px 0 0;
+  font-size: 12px;
+}
+
 .progress {
   height: 8px;
   background: rgba(0, 0, 0, 0.35);

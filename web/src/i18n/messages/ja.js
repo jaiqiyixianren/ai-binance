@@ -36,6 +36,11 @@ export default {
     roundFull: '満額 · 終了待ち',
     roundDone: 'finalize 済',
     roundCurrent: '現在',
+    countdownLabelStarts: '第 {n} ラウンド開始まで',
+    countdownLabelNext: '第 {n} ラウンド開始まで',
+    countdownLabelEnds: 'このラウンド終了まで',
+    countdownLabelDone: '4 ラウンド終了',
+    countdownAt: '開始予定 {time}',
     ctaTitle: 'Agent でミント',
     ctaBody:
       'ボタンでプロンプトをコピーし Cursor / Hark に貼り付け、baw で Binance App から各取引を確認してください。',

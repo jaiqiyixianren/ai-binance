@@ -3,8 +3,10 @@ export const BSC_CHAIN_ID = 56
 /** 空 = 正式；test-10m = 每轮 10 分钟测试部署 */
 export const SITE_VARIANT = import.meta.env.VITE_SITE_VARIANT || ''
 
-export const PUBLIC_BSC_RPC =
-  import.meta.env.VITE_BSC_RPC || 'https://bsc-dataseed.binance.org'
+import { resolvePublicBscRpcUrl, DEFAULT_BSC_RPC } from './security/rpc.js'
+
+/** 经白名单校验后的只读 RPC（勿把用户钱包接到此 URL） */
+export const PUBLIC_BSC_RPC = resolvePublicBscRpcUrl(import.meta.env.VITE_BSC_RPC) || DEFAULT_BSC_RPC
 
 /** 部署后填写 .env；未配置时页面仍展示卡牌与轮次说明，但不拉链 */
 export const ADDRESSES = {

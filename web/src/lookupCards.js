@@ -2,6 +2,9 @@ import { Contract, formatUnits, getAddress, isAddress } from 'ethers'
 import { ADDRESSES, MINT_ABI } from './config.js'
 import { cardMetaForSpecies } from './cards.js'
 import { queryMintedLogsChunked, resolveCurrentRoundLogScan } from './mintLogScan.js'
+import { assertLookupAllowed } from './security/lookupRateLimit.js'
+
+const MAX_ADDRESS_LEN = 42
 
 function sortRows(rows) {
   return [...rows].sort((a, b) => {
@@ -44,11 +47,14 @@ function enrichRows(rows, mintAddr) {
  * 只查「当前开放轮次」内该地址的 Minted 事件（窗口外不扫链、不展示历史轮）。
  */
 export async function lookupCardsByAddress(provider, addressInput) {
+  assertLookupAllowed()
   if (!ADDRESSES.mint) throw new Error('Mint address not configured')
-  if (!addressInput?.trim()) throw new Error('Enter wallet address')
-  if (!isAddress(addressInput)) throw new Error('Invalid BSC address')
+  const trimmed = addressInput?.trim() ?? ''
+  if (!trimmed) throw new Error('Enter wallet address')
+  if (trimmed.length > MAX_ADDRESS_LEN) throw new Error('Invalid BSC address')
+  if (!isAddress(trimmed)) throw new Error('Invalid BSC address')
 
-  const wallet = getAddress(addressInput.trim())
+  const wallet = getAddress(trimmed)
   const mint = new Contract(ADDRESSES.mint, MINT_ABI, provider)
   const mintAddr = ADDRESSES.mint
 
